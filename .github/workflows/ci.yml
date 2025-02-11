@@ -1,0 +1,46 @@
+name: Daily Auto-PR Workflow
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
+  workflow_dispatch:      # Allows manual triggering
+
+jobs:
+  run-and-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Install newer Nix"
+        uses: "cachix/install-nix-action@V28"
+
+      - name: "Configure Nix"
+        shell: "bash"
+        run: |
+          sudo echo
+          {
+            echo "experimental-features = nix-command flakes";
+            echo "accept-flake-config = true";
+          } | sudo tee -a /etc/nix/nix.conf >/dev/null
+
+      - name: Update flake lock
+        id: bump
+        run: |
+          nix flake update
+          echo "has_changes=$(git status --porcelain | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.bump.outputs.has_changes != '0'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: automatic flake bump'
+          title: 'Flake bump'
+          body: |
+            This PR was created automatically.
+          branch: automatic-flake-update
+          delete-branch: true
+          base: main
