@@ -16,15 +16,15 @@
       packages.nightly = fenixPkgs.default.toolchain;
       # If you want to compile no_std binaries for ESP32-C2 and ESP32-C3
       packages.esp32-riscv-no-std = fenixPkgs.combine (with fenixPkgs; [
-        default.cargo
-        default.clippy
-        default.rust-docs
-        default.rust-std
-        default.rustc
-        default.rustfmt
-        stable.rust-src
-        stable.llvm-tools
-        targets.riscv32imc-unknown-none-elf.stable.rust-std
+        latest.cargo
+        latest.clippy
+        latest.rust-docs
+        latest.rust-std
+        latest.rustc
+        latest.rustfmt
+        latest.rust-src
+        latest.llvm-tools-preview
+        targets.riscv32imc-unknown-none-elf.latest.rust-std
       ]);
       packages.default = self.packages.${system}.stable;
     });
