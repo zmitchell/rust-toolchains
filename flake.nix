@@ -13,7 +13,7 @@
     in
     {
       packages.stable = fenixPkgs.stable.toolchain;
-      packages.nightly = fenixPkgs.default.toolchain;
+      packages.nightly = fenixPkgs.latest.toolchain;
       # If you want to compile no_std binaries for ESP32-C2 and ESP32-C3
       packages.esp32-riscv-no-std = fenixPkgs.combine (with fenixPkgs; [
         latest.cargo
